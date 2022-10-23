@@ -1,0 +1,13 @@
+<Resource
+  name="jdbc/OpenKMDS"
+  auth="Container"
+  type="javax.sql.DataSource"
+  maxActive="100"
+  maxIdle="30"
+  maxWait="10000"
+  validationQuery="select 1"
+  username="openkm"
+  password="openkm1234"
+  driverClassName="org.mariadb.jdbc.Driver"
+  url="jdbc:mariadb://localhost:3306/okmdb?useSSL=false&amp;autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8"
+/>

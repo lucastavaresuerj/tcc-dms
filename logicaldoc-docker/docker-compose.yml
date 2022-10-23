@@ -1,0 +1,47 @@
+version: "3"
+
+networks:
+  logicaldoc-default-network:
+    external: true
+
+services:
+  logicaldoc-db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: logicaldoc-db
+    user: root
+    ports:
+      - 3306:3306
+    networks:
+      - logicaldoc-default-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ${PWD}/ldoc_db:/var/lib/mysql
+
+  logicaldoc:
+    image: logicaldoc/logicaldoc-ce
+    container_name: logicaldoc
+    networks:
+      - logicaldoc-default-network
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+    links:
+      - logicaldoc-db:mysql-ld
+    ports:
+      - 8080:8080
+    depends_on:
+      logicaldoc-db:
+        condition: service_healthy
+    volumes:
+      - ${PWD}/logicaldoc-conf:/opt/logicaldoc/conf
+      - ${PWD}/logicaldoc-repo:/opt/logicaldoc/repository

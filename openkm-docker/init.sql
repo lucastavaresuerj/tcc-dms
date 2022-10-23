@@ -1,0 +1,4 @@
+-- DROP DATABASE IF EXISTS okmdb;
+-- CREATE DATABASE okmdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
+-- CREATE USER 'openkm@localhost' IDENTIFIED BY 'openkm1234';
+-- GRANT ALL ON okmdb.* TO openkm@localhost WITH GRANT OPTION;

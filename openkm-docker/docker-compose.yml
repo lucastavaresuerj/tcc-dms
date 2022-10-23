@@ -1,0 +1,41 @@
+version: "3"
+
+networks:
+  openkm-default-network:
+    external: true
+
+services:
+  openkm-db:
+    image: mariadb
+    container_name: openkm-db
+    user: root
+    ports:
+      - 3306:3306
+    networks:
+      - openkm-default-network
+    # command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ${PWD}/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - ${PWD}/mariadb:/var/lib/mysql
+      - ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  openkm:
+    image: openkm/openkm-ce
+    container_name: openkm
+    networks:
+      - openkm-default-network
+    links:
+      - openkm-db:mysql
+    ports:
+      - 8080:8080
+    volumes:
+      - ${PWD}/server.xml:/opt/tomcat/conf/server.xml
+      - ${PWD}/OpenKM.cfg:/opt/tomcat/OpenKM.cfg
+      - ${PWD}/repository:/opt/tomcat/repository
+    depends_on:
+      - openkm-db
