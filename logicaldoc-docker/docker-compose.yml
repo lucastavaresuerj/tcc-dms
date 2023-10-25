@@ -2,7 +2,6 @@ version: "3"
 
 networks:
   logicaldoc-default-network:
-    external: true
 
 services:
   logicaldoc-db:
@@ -15,12 +14,19 @@ services:
     networks:
       - logicaldoc-default-network
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=logicaldoc1234
+      - MYSQL_DATABASE=logicaldoc
+      - MYSQL_USER=ldoc
+      - MYSQL_PASSWORD=logicaldoc1234
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+        ]
       timeout: 20s
       retries: 10
     volumes:
@@ -32,9 +38,9 @@ services:
     networks:
       - logicaldoc-default-network
     environment:
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=logicaldoc
+      - DB_USER=ldoc
+      - DB_PASSWORD=logicaldoc1234
     links:
       - logicaldoc-db:mysql-ld
     ports:
